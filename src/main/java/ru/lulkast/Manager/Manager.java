@@ -30,8 +30,8 @@ public final class Manager {
         Class<?> clazz = Class.forName(params.get("Class"));
         Constructor<?> constructor = clazz.getConstructor(UUID.class, String.class, double.class, double.class);
         Object locatedInTheCity = constructor.newInstance(UUID.randomUUID(), "NULL", 1, 1);
-        Map<Method, Class> settersTypeMap = getSettersType(clazz);
-        Map<Method, Object> settersWithParams = getSettersWithParams(settersTypeMap, params);
+        Map<Method, Class> settersWithTypes = getSettersWithTypes(clazz);
+        Map<Method, Object> settersWithParams = getSettersWithParams(settersWithTypes, params);
         for (Map.Entry<Method, Object> entry : settersWithParams.entrySet()) {
             Method method = entry.getKey();
             Object param = entry.getValue();
@@ -55,7 +55,7 @@ public final class Manager {
                 .collect(Collectors.toMap(a -> a.substring(0, a.indexOf(":")), a -> a.substring(a.indexOf(":") + 1)));
     }
 
-    private static Map<Method, Class> getSettersType(Class<?> clazz) {
+    private static Map<Method, Class> getSettersWithTypes(Class<?> clazz) {
         HashMap<Method, Class> setterTypeMap = new HashMap<>();
         List<Field> declaredFields = Arrays.asList(clazz.getDeclaredFields());
         String setterPrefix = "set";
