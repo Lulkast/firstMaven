@@ -1,6 +1,6 @@
-package test.framework;
+package ru.lulkast.framework;
 
-import annotations.MyFrameworkTest;
+import ru.lulkast.annotations.MyFrameworkTest;
 import org.reflections.Reflections;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;

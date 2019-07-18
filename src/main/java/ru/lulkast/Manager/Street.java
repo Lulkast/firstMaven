@@ -1,6 +1,9 @@
-package Manager;
+package ru.lulkast.Manager;
 
-import lombok.*;
+import lombok.Getter;
+import lombok.NonNull;
+import lombok.Setter;
+import lombok.ToString;
 
 import java.util.HashSet;
 import java.util.Objects;
@@ -11,11 +14,11 @@ import java.util.UUID;
 @ToString
 public class Street implements Areable, LocatedInTheCity {
 
-    private final UUID id;
+    private  UUID id;
     private String name;
     private double length;
     private double width;
-    private Set<Damage> damages;
+    private Set<Damage> damage;
     private String cityName;
 
 
@@ -24,7 +27,7 @@ public class Street implements Areable, LocatedInTheCity {
         this.name = name;
         this.length = length;
         this.width = width;
-        this.damages = new HashSet<>();
+        this.damage = new HashSet<>();
     }
 
     public Street(@NonNull UUID uuid, @NonNull String name, double length, double width) {    //второй конструктор, потому что в базу к нам поступают улицы с готовыми айди
@@ -32,13 +35,13 @@ public class Street implements Areable, LocatedInTheCity {
         this.name = name;
         this.length = length;
         this.width = width;
-        this.damages = new HashSet<>();
+        this.damage = new HashSet<>();
     }
 
-    public void setDamag(@NonNull Damage... damag) {
+    public void setDamage(@NonNull Damage... damag) {
         for (Damage d : damag
         ) {
-            this.damages.add(d);
+            this.damage.add(d);
         }
     }
 
@@ -52,7 +55,7 @@ public class Street implements Areable, LocatedInTheCity {
     }
     @Override
     public Set<Damage> getDamage() {
-        return damages;
+        return damage;
     }
 
     @Override

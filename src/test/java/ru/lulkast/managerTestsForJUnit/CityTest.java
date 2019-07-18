@@ -1,12 +1,10 @@
-package managerTestsForJUnit;
+package ru.lulkast.managerTestsForJUnit;
 
-import Manager.City;
-import Manager.LocatedInTheCity;
-import Manager.Park;
-import Manager.Street;
+import ru.lulkast.Manager.City;
+import ru.lulkast.Manager.LocatedInTheCity;
+import ru.lulkast.Manager.Park;
+import ru.lulkast.Manager.Street;
 import org.junit.Test;
-import annotations.TestableClass;
-
 import java.util.ArrayList;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;

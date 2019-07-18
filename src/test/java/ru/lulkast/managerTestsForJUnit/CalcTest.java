@@ -1,12 +1,9 @@
-package managerTestsForJUnit;
+package ru.lulkast.managerTestsForJUnit;
 
-import Manager.*;
+import ru.lulkast.Manager.*;
 import org.junit.Test;
-import annotations.TestableClass;
-
 import java.util.ArrayList;
 import java.util.Arrays;
-
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 
@@ -22,8 +19,8 @@ public class CalcTest {
     }
     @Test
     public void getDamagTest(){
-        ((Street) list.get(1)).setDamag(new Damage(1, 1));
-        ((Park)list.get(2)).setDamag(new Damage(2, 2), new Damage(1, 1));
+        ((Street) list.get(1)).setDamage(new Damage(1, 1));
+        ((Park)list.get(2)).setDamage(new Damage(2, 2), new Damage(1, 1));
         assertThat(Calc.getDamag(list), is(6.0));
     }
     @Test

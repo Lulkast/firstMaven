@@ -1,6 +1,6 @@
-package testsForMyFramework;
+package ru.lulkast.testsForMyFramework;
 
-import annotations.MyFrameworkTest;
+import ru.lulkast.annotations.MyFrameworkTest;
 
 @MyFrameworkTest(2)
 public class Tests1 {

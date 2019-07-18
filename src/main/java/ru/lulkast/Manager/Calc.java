@@ -1,7 +1,6 @@
-package Manager;
+package ru.lulkast.Manager;
 
 import java.util.Collection;
-import java.util.Set;
 import java.util.stream.Stream;
 
 final public class Calc {

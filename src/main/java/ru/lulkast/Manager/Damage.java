@@ -1,4 +1,4 @@
-package Manager;
+package ru.lulkast.Manager;
 
 import lombok.Getter;
 import lombok.NonNull;
