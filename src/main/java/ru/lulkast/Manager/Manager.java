@@ -30,9 +30,9 @@ public final class Manager {
         Class<?> clazz = Class.forName(params.get("Class"));
         Constructor<?> constructor = clazz.getConstructor(UUID.class, String.class, double.class, double.class);
         Object locatedInTheCity = constructor.newInstance(UUID.randomUUID(), "NULL", 1, 1);
-        Map<Method, Class> setterTypeMap = getSettersType(clazz);
-        Map<Method, Object> setterWithParams = getSettersWithParams(setterTypeMap, params);
-        for (Map.Entry<Method, Object> entry : setterWithParams.entrySet()) {
+        Map<Method, Class> settersTypeMap = getSettersType(clazz);
+        Map<Method, Object> settersWithParams = getSettersWithParams(settersTypeMap, params);
+        for (Map.Entry<Method, Object> entry : settersWithParams.entrySet()) {
             Method method = entry.getKey();
             Object param = entry.getValue();
             method.invoke(locatedInTheCity, param);
