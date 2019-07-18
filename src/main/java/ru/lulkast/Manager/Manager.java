@@ -14,7 +14,7 @@ import java.util.stream.Collectors;
 public final class Manager {
     private Manager() {
     }
-    static Map<Class, Function<String, ?>> classFunctionMap = new HashMap<>();
+    static final Map<Class, Function<String, ?>> classFunctionMap = new HashMap<>();
     static Set<City> cities = new HashSet<>();
     static {
         Function<String, UUID> stringToUUID = string -> UUID.fromString(string);
@@ -25,7 +25,7 @@ public final class Manager {
         classFunctionMap.put(String.class, stringToString);
     }
 
-    private static final Function<String, ?> getFunctionsClass(Type type) {
+    private static Function<String, ?> getFunctionsClass(Type type) {
         return Manager.classFunctionMap.get(type);
     }
 
