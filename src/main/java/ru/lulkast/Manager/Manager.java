@@ -1,12 +1,10 @@
 package ru.lulkast.Manager;
 
+import org.apache.commons.lang3.StringUtils;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.Type;
+import java.lang.reflect.*;
 import java.util.*;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -14,8 +12,10 @@ import java.util.stream.Collectors;
 public final class Manager {
     private Manager() {
     }
+
     static final Map<Class, Function<String, ?>> classFunctionMap = new HashMap<>();
     static Set<City> cities = new HashSet<>();
+
     static {
         Function<String, UUID> stringToUUID = string -> UUID.fromString(string);
         Function<String, Double> stringToDouble = string -> Double.parseDouble(string);
@@ -25,31 +25,68 @@ public final class Manager {
         classFunctionMap.put(String.class, stringToString);
     }
 
-    private static Function<String, ?> getFunctionsClass(Type type) {
-        return Manager.classFunctionMap.get(type);
-    }
-
     public static LocatedInTheCity paramsToLocatedInTheCityReflectively(List<String> list) throws Exception {
-        Map<String, String> map = list.stream()
-                .collect(Collectors.toMap(a -> a.substring(0, a.indexOf(":")), a -> a.substring(a.indexOf(":") + 1)));
-        Class<?> clazz = Class.forName(map.get("Class"));
+        Map<String, String> params = getParamsFromBase(list);
+        Class<?> clazz = Class.forName(params.get("Class"));
         Constructor<?> constructor = clazz.getConstructor(UUID.class, String.class, double.class, double.class);
         Object locatedInTheCity = constructor.newInstance(UUID.randomUUID(), "NULL", 1, 1);
-        List<Method> methods = Arrays.asList(clazz.getDeclaredMethods());
-        Map<Method, String> methodAndParam = methods.stream()
-                .filter(method -> method.getName().startsWith("set"))
-                .filter(method -> map.containsKey(method.getName().substring(3)))
-                .collect(Collectors.toMap(method -> method, method -> map.get(method.getName().substring(3))));
-        for (Map.Entry<Method, String> entry : methodAndParam.entrySet()) {
+        Map<Method, Class> setterTypeMap = getSettersType(clazz);
+        Map<Method, Object> setterWithParams = getSettersWithParams(setterTypeMap, params);
+        for (Map.Entry<Method, Object> entry : setterWithParams.entrySet()) {
             Method method = entry.getKey();
-            String param = entry.getValue();
-            Type paramsType = method.getGenericParameterTypes()[0];
-            Function function = Manager.getFunctionsClass(paramsType);
-            method.invoke(locatedInTheCity, function.apply(param));
+            Object param = entry.getValue();
+            method.invoke(locatedInTheCity, param);
         }
         LocatedInTheCity someBilding = (LocatedInTheCity) locatedInTheCity;
         return someBilding;
     }
+
+    private static Function<String, ?> getFunctionsClass(Type type) {
+        return Manager.classFunctionMap.get(type);
+    }
+
+    private static Object convertStringByType(String string, Type type) {
+        Function function = Manager.getFunctionsClass(type);
+        return function.apply(string);
+    }
+
+    private static Map<String, String> getParamsFromBase(List<String> list) {
+        return list.stream()
+                .collect(Collectors.toMap(a -> a.substring(0, a.indexOf(":")), a -> a.substring(a.indexOf(":") + 1)));
+    }
+
+    private static Map<Method, Class> getSettersType(Class<?> clazz) {
+        HashMap<Method, Class> setterTypeMap = new HashMap<>();
+        List<Field> declaredFields = Arrays.asList(clazz.getDeclaredFields());
+        String setterPrefix = "set";
+        for (Field declaredField : declaredFields) {
+            String fieldName = declaredField.getName();
+            String setterName = setterPrefix + StringUtils.capitalize(fieldName);
+            Class type = declaredField.getType();
+            try {
+                Method declaredMethod = clazz.getDeclaredMethod(setterName, type);
+                setterTypeMap.put(declaredMethod, type);
+            } catch (Exception e) {
+            }
+        }
+        return setterTypeMap;
+    }
+
+    private static Map<Method, Object> getSettersWithParams(Map<Method, Class> setterTypeMap, Map<String, String> params) {
+        Map<Method, Object> setterParamsMap = new HashMap<>();
+        for (Map.Entry<Method, Class> entry : setterTypeMap.entrySet()) {
+            Method method = entry.getKey();
+            Class type = entry.getValue();
+            String paramString = params.get(method.getName().substring(3));
+            Object param = convertStringByType(paramString, type);
+            setterParamsMap.put(method, param);
+        }
+        return setterParamsMap;
+    }
+
+
+    /*-----------------------------------------------------------------------------*/
+
 
     public static City buildCityReflectively(String cityName) throws IllegalAccessException, InvocationTargetException, InstantiationException {
         Class<City> cityClass = City.class;
